@@ -1,0 +1,11 @@
+#react-parent-div {
+  margin-left: 50px;
+}
+.tree-navigator {
+  position: relative;
+}
+.panel_button {
+    top: 0px;
+    left: 0px;
+    position: absolute;
+}
