@@ -1,0 +1,43 @@
+#main {
+  margin-left: 50px;
+}
+.panel_button {
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    z-index: 1000;
+}
+.tree-navigator {
+  z-index: 1000;
+  max-width: 400px;
+}
+/* .custom .layout-panel {
+  position: unset;
+} */
+
+/* flex css */
+/* .row {
+  display: flex;
+}
+.column {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+} */
+/* / */
+/* #tree-nav {
+  flex: 0 0 auto;
+  background: red;
+  display: flex;
+}
+#main {
+  flex: 1 1 100px;
+  background: yellow;
+  height: 100px
+}
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+} */

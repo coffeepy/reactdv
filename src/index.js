@@ -4,21 +4,19 @@ import App from './components/App'
 
 // css imports
 import "react-table/react-table.css"
+import './css/reactdv.css'
 
-// ReactDom.render(<HelloReact/>, document.getElementById('root'))
-// console.log('hello')
-// $('document').ready(()=> console.log(document.getElementById('root')))
-// $(document).ready(()=> console.log(document.getElementById('root')))
-
-class LoadReact {
-  constructor(elem, page, tag) {
-    // ReactDom.render(<App page={page} defaultModel='singleCatalog'/>, elem[0])
-    ReactDom.render(<App page={page} defaultModel='results'/>, elem[0])
-    // ReactDom.render(<div>Test Mini</div>, elem[0])
-  }
+const store = {
+  page: window.page,
+  selectedClipModel: 'result',
+  defaultModel: 'results',
 }
 
-window.LoadReact = LoadReact
-
-// for development only
-// new LoadReact([document.getElementById('root')])
+export const PageContext = React.createContext(store)
+// requires injector to load properly
+ReactDom.render(
+  <PageContext.Provider value={store}>
+    <App page={window.page} defaultModel='results' selectedClipModel='result'/>
+  </PageContext.Provider>,
+  window.react_elem
+)

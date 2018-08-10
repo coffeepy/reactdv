@@ -1,11 +1,8 @@
-const HtmlWebPackPlugin = require("html-webpack-plugin");
-
-const htmlPlugin = new HtmlWebPackPlugin({
-  template: "./src/index.html",
-  filename: "index.html"
-});
-
 module.exports = {
+  output: {
+    path: "/var/lib/tomcat/webapps/catdv/northshore/reactdv",
+    filename: "[name].bundle.js",
+  },
   module: {
     rules: [
       {
@@ -21,7 +18,6 @@ module.exports = {
       },
     ]
   },
-  plugins: [htmlPlugin],
   optimization: {
     splitChunks: {
       chunks: 'all',

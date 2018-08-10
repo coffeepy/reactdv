@@ -1,13 +1,45 @@
 import React, { Component } from 'react'
 import ReactTable from 'react-table'
 import {Doughnut} from 'react-chartjs-2'
+import TranscriptHighlighter from './TranscriptHighlighter'
+import MediaPanel from './catdvComponents/MediaPanel'
+import {PageContext} from '../index.js'
 
 
+const styleSheet = {
+  main: {
+    display: 'flex',
+    // flex: 1,
+  },
+  table: {
+    // flex: '1 500px'
+    minWidth: 800,
+  },
+  chart: {
+    // flex: '1 100px'
+  },
+  transcript: {
+    // flex: '1 900px'
+    maxWidth: 500,
+  },
+  button: {
+    height: 20,
+    width: 20,
+    background: "#4e4ed3",
+    border: "#22229a",
+    textAlign: "center",
+    color: "white",
+  }
+}
 
 export default class App extends Component {
   state = {
     clips: [],
-    model: null,
+    clipsModel: undefined,
+    selectedClipModel: undefined,
+    selectedClipData: undefined,
+    videoPlayer: undefined,
+    showTable: true,
     clipTypeData: {
       datasets: [],
       labels: [],
@@ -43,9 +75,6 @@ export default class App extends Component {
     }))
 
   }
-  // addClips = (data) => {
-  //   this.setState({clips: data.items})
-  // }
   clipsByTypeWithCount = (clips) => {
     // reduces clips to an object with the
     // type and count, returns object like
@@ -65,18 +94,51 @@ export default class App extends Component {
     }
     , {})
   }
+  getData = (clipsModel) => {
+    return clipsModel.getData(clipsModel.currentClipQuery || '', this.onClipLoad)
+  }
+  onTableRowClick = (rowInfo) => {
+    const {selectedClipModel, videoPlayer} = this.state
+    // set the selected model, this is taken from data on the rowInfo props
+    // passed in from the React Table
+    rowInfo.original.transcript =
+      rowInfo.original.userFields['nsa-dev.aws.transcript']
+        ? JSON.parse(rowInfo.original.userFields['nsa-dev.aws.transcript'])
+        : undefined
+
+    this.setState({selectedClipData: rowInfo.original})
+    // set selected clip and then add video player
+    selectedClipModel.setSelectedClips([rowInfo.original.ID], () =>
+      !videoPlayer && this.setState({videoPlayer: $('.player > .videoPlayer')})
+    )
+    // alert('clicked')
+    // toggleTable viz
+    this.toggleTableVisibility()
+  }
+  toggleTableVisibility = () => {
+    this.setState((prevState)=> ({showTable: !prevState.showTable }))
+  }
   componentDidMount () {
-    const {page, defaultModel} = this.props
-    console.log(defaultModel);
-    const model = page.getClipsModel(defaultModel)
-    console.log('model', model)
+    let {page, defaultModel, selectedClipModel} = this.props
+    const clipsModel = page.getClipsModel(defaultModel)
+    selectedClipModel = page.getSelectedClipsModell(selectedClipModel)
     window.appPage = page
-    // set default model
-    this.setState({model})
+    window.clipsModel = clipsModel
+    // set default clipsModel, selectedClipModel
+    this.setState({clipsModel, selectedClipModel})
     // make query to clips
-    model.getData('', this.onClipLoad)
+    this.getData(clipsModel)
+    // setup listener
+    clipsModel.onQueryChanged(() => this.getData(clipsModel))
   }
   render () {
+    const {
+      clips,
+      clipTypeData,
+      selectedClipData,
+      videoPlayer,
+      showTable,
+    } = this.state
     const columns = [
       {
         Header: 'Name',
@@ -88,15 +150,46 @@ export default class App extends Component {
       },
     ]
     return (
-      <div>
-        <div>
-          <ReactTable
-            data={this.state.clips}
-            columns={columns}
+      <div style={styleSheet.main}>
+        <button
+          style={styleSheet.button}
+          onClick={this.toggleTableVisibility}>
+          {
+
+              showTable ? "-" : "+"
+          }
+
+        </button>
+          {
+              showTable &&
+                <div style={styleSheet.table}>
+                    <ReactTable
+                      data={clips}
+                      columns={columns}
+                      className={"-striped -highlight"}
+                       getTrProps={(state, rowInfo, column) => ({onClick: () => this.onTableRowClick(rowInfo)})}
+                    />
+                </div>
+          }
+        {/* <div style={styleSheet.chart}>
+          <Doughnut data={clipTypeData}/>
+        </div> */}
+        <div style={styleSheet.chart}>
+          <MediaPanel
+            page={this.props.page}
+            selectedClipModel={this.props.selectedClipModel}
           />
         </div>
-        <div>
-          <Doughnut data={this.state.clipTypeData}/>
+        <div style={styleSheet.transcript}>
+          <h3>Follow Along with the Video</h3>
+          <div>
+            { videoPlayer && selectedClipData && selectedClipData.transcript &&
+                <TranscriptHighlighter
+                  videoPlayer={videoPlayer}
+                  transciptionObjects={ selectedClipData.transcript.results.items}
+                />
+            }
+          </div>
         </div>
       </div>
     )

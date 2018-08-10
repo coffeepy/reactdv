@@ -1,31 +1,22 @@
 <page title="ReactDV">
   <import>
-    <script name="vendors-main.min.js"/>
-    <script name="reactdv.min.js"/>
-    <script name="testDeleteMe.js"/>
-    <stylesheet name="reactdv.css"/>
+    <script name="injector.js"/>
   </import>
 
   <models>
+		<model type="selected-clip" name="result" />
 		<model type="clips" name="results" />
-		<model type="clips" name="singleCatalog" catalog="Karma Automotive Demo" />
   </models>
 
   <layout>
-    <!-- <panel id='parent-div'> -->
-      <row id='left-nav'>
-    		<panel grow="true" shrink="true" id="tree-nav-container">
-    				<tree-navigator  id="tree-navigator" clips-model="results" />
-    		</panel>
-        <panel id='react-parent-div' grow="true" shrink="true">
-          <panel id="root" jsclass="LoadReact"></panel>
-        </panel>
-      </row >
-
-    <!-- <clips-view clips-model="results"/> -->
-    <!-- <media-panel auto-load="true" auto-play="true"/> -->
-    <!-- <clips-panel clips-model="results"/> -->
-
-		<!-- <tree-navigator id="tree-navigator" clips-model="all" /> -->
+    <tree-navigator id="tree-navigator" clips-model="results" />
+    <row>
+      <panel id="tree-nav">
+      </panel>
+      <panel id="main">
+        <!-- Where all react loads including react table, chart, transcribe text-->
+        <panel jsclass="LoadReact"></panel>
+      </panel>
+    </row>
   </layout>
 </page>
