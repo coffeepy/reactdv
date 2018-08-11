@@ -1,19 +1,24 @@
 import React, { Component } from 'react'
-import ReactTable from 'react-table'
+// lib imports
 import {Doughnut} from 'react-chartjs-2'
-import TranscriptHighlighter from './TranscriptHighlighter'
-import MediaPanel from './catdvComponents/MediaPanel'
-import {PageContext} from '../index.js'
 
+// local imports
+import MediaPanel from './catdvComponents/MediaPanel'
+import TranscriptHighlighter from './TranscriptHighlighter'
+import CatalogTable from './CatalogTable'
+
+// const ctx = {
+//   page: window.page,
+//   selectedClipModel: 'result',
+//   defaultModel: 'results',
+// }
+//
+// const CatdvWebAppContext = React.createContext(ctx)
 
 const styleSheet = {
   main: {
     display: 'flex',
     // flex: 1,
-  },
-  table: {
-    // flex: '1 500px'
-    minWidth: 800,
   },
   chart: {
     // flex: '1 100px'
@@ -134,23 +139,15 @@ export default class App extends Component {
   render () {
     const {
       clips,
-      clipTypeData,
       selectedClipData,
       videoPlayer,
       showTable,
     } = this.state
-    const columns = [
-      {
-        Header: 'Name',
-        accessor: 'name'
-      },
-      {
-        Header: 'Catalog',
-        accessor: 'catalog.name'
-      },
-    ]
     return (
       <div style={styleSheet.main}>
+        {/* <div style={styleSheet.chart}>
+          <Doughnut data={clipTypeData}/>
+        </div> */}
         <button
           style={styleSheet.button}
           onClick={this.toggleTableVisibility}>
@@ -158,22 +155,14 @@ export default class App extends Component {
 
               showTable ? "-" : "+"
           }
-
         </button>
-          {
-              showTable &&
-                <div style={styleSheet.table}>
-                    <ReactTable
-                      data={clips}
-                      columns={columns}
-                      className={"-striped -highlight"}
-                       getTrProps={(state, rowInfo, column) => ({onClick: () => this.onTableRowClick(rowInfo)})}
-                    />
-                </div>
-          }
-        {/* <div style={styleSheet.chart}>
-          <Doughnut data={clipTypeData}/>
-        </div> */}
+        {
+          showTable &&
+          <CatalogTable
+            clips={clips}
+            onTableRowClick={this.onTableRowClick}
+          />
+        }
         <div style={styleSheet.chart}>
           <MediaPanel
             page={this.props.page}

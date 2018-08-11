@@ -1,9 +1,12 @@
 import React, {Component} from 'react'
 import Transcript from './Transcript'
+// local imports
+import MediaPanel from './catdvComponents/MediaPanel'
 
 export default class TranscriptHighlighter extends Component {
   state = {
-    currentTime: {}
+    currentTime: 0,
+    videoPlayer: {},
   }
   setCurrentTime = (currentTime) => {
     const {videoPlayer} = this.props
@@ -40,7 +43,6 @@ export default class TranscriptHighlighter extends Component {
           currentTime={currentTime}
           jumpTo={this.setCurrentTime}
         />
-
       )
     )
   }
